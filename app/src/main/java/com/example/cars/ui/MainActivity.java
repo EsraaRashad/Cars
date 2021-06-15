@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getData(0);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getData(Integer page){
+    private void getData(Integer page) {
         Call<CarsModel> call2 = apiService.getCars(page + "");
         call2.enqueue(new Callback<CarsModel>() {
             @Override
@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!isLoading) {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == carsResult.size() - 1) {
                         //bottom of list!
+                        page++;
                         loadMore();
-                        page ++;
                         isLoading = true;
                     }
                 }
@@ -131,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadMore() {
         carsResult.add(null);
         recyclerViewAdapter.notifyItemInserted(carsResult.size() - 1);
-
-
+        getData(page);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
