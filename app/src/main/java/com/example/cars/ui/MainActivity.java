@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                 CarsModel carList = response.body();
                 carsResult = carList.getCarsResult();
-                result = carList.getCarsResult().get(0);
+                result = carList.getCarsResult().get(page);
                 swipeRefresh.setRefreshing(false);
 
             }
