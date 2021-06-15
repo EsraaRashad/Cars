@@ -11,6 +11,6 @@ import retrofit2.http.Query;
  * email : esraarashad56@yahoo.com
  */
 public interface ApiService {
-    @GET("/api/v1/cars?page={page}")
+    @GET("/api/v1/cars?page=")
     Call<CarsModel> getCars(@Query("page") String page);
 }

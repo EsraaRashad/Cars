@@ -1,23 +1,19 @@
-package com.example.cars;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.cars.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.cars.R;
 import com.example.cars.data.model.CarsModel;
 import com.example.cars.data.model.CarsResult;
 import com.example.cars.data.remote.ApiService;
 import com.example.cars.data.remote.RetrofitClient;
-import com.example.cars.ui.RecyclerViewAdapter;
-
 import java.util.ArrayList;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,30 +28,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<CarsResult> carsResult = new ArrayList<>();
     CarsResult result = null;
     boolean isLoading = false;
-   /* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        brandTxt = (TextView) findViewById(R.id.car_brand_txt);
-        usedTxt = (TextView) findViewById(R.id.car_status_txt);
-        apiService = RetrofitClient.getClient().create(ApiService.class);
-
-        Call<CarsModel> call2 = apiService.getCars("2");
-        call2.enqueue(new Callback<CarsModel>() {
-            @Override
-            public void onResponse(Call<CarsModel> call, Response<CarsModel> response) {
-
-                CarsModel carList = response.body();
-
-            }
-
-            @Override
-            public void onFailure(Call<CarsModel> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
-                call.cancel();
-            }
-        });
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +41,23 @@ public class MainActivity extends AppCompatActivity {
         populateData();
         initAdapter();
         initScrollListener();
-        Call<CarsModel> call2 = apiService.getCars("2");
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerViewAdapter = new RecyclerViewAdapter(carsResult);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+
+    private void populateData() {
+        int i = 0;
+        while (i < 10) {
+            carsResult.add(result);
+            i++;
+        }
+
+        Call<CarsModel> call2 = apiService.getCars(i+"");
         call2.enqueue(new Callback<CarsModel>() {
             @Override
             public void onResponse(Call<CarsModel> call, Response<CarsModel> response) {
@@ -81,20 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CarsModel> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 call.cancel();
             }
         });
-
-    }
-
-
-    private void populateData() {
-        int i = 0;
-        while (i < 10) {
-            carsResult.add(result);
-            i++;
-        }
     }
 
     private void initAdapter() {
@@ -153,7 +131,5 @@ public class MainActivity extends AppCompatActivity {
                 isLoading = false;
             }
         }, 2000);
-
-
     }
 }
