@@ -10,25 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.cars.R;
-
-import java.util.List;
+import com.example.cars.data.model.CarsResult;
+import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
 
-    public List<String> mItemList;
+    public ArrayList<CarsResult> carsList;
+    private CarsResult carsResult = null;
 
+    public RecyclerViewAdapter(ArrayList<CarsResult> carsItemList) {
 
-    public RecyclerViewAdapter(List<String> itemList) {
-
-        mItemList = itemList;
+        carsList = carsItemList;
     }
 
     @NonNull
@@ -57,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return mItemList == null ? 0 : mItemList.size();
+        return carsList == null ? 0 : carsList.size();
     }
 
     /**
@@ -68,18 +67,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     @Override
     public int getItemViewType(int position) {
-        return mItemList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return carsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvItem;
+        public TextView carBrandTV;
+        public TextView carStatusTV;
+        public ConstraintLayout constraintLayout;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            tvItem = itemView.findViewById(R.id.tvItem);
+            this.carBrandTV = (TextView) itemView.findViewById(R.id.car_brand_txt);
+            this.carStatusTV = (TextView) itemView.findViewById(R.id.car_status_txt);
+            constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.car_container);
         }
     }
 
@@ -95,15 +97,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void showLoadingView(LoadingViewHolder viewHolder, int position) {
         //ProgressBar would be displayed
-
+        viewHolder.progressBar.setVisibility(View.VISIBLE);
     }
 
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
-
-        String item = mItemList.get(position);
-        viewHolder.tvItem.setText(item);
-
+        carsResult = carsList.get(position);
+        viewHolder.carBrandTV.setText(carsResult.getBrand());
+        if (carsResult.getUsed()) {
+            viewHolder.carStatusTV.setText("is used");
+        } else {
+            viewHolder.carStatusTV.setText("is new");
+        }
     }
-
-
 }
