@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<CarsResult> carsResult = new ArrayList<>();
     CarsResult result = null;
     boolean isLoading = false;
+    Integer page = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,20 +57,16 @@ public class MainActivity extends AppCompatActivity {
          swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                getData(0);
                 populateData();
+                initAdapter();
+                initScrollListener();
             }
         });
     }
 
-
-    private void populateData() {
-        int i = 0;
-        while (i < 10) {
-            carsResult.add(result);
-            i++;
-        }
-
-        Call<CarsModel> call2 = apiService.getCars(i + "");
+    private void getData(Integer page){
+        Call<CarsModel> call2 = apiService.getCars(page + "");
         call2.enqueue(new Callback<CarsModel>() {
             @Override
             public void onResponse(Call<CarsModel> call, Response<CarsModel> response) {
@@ -87,6 +84,15 @@ public class MainActivity extends AppCompatActivity {
                 call.cancel();
             }
         });
+    }
+
+
+    private void populateData() {
+        int i = 0;
+        while (i < 10) {
+            carsResult.add(result);
+            i++;
+        }
     }
 
     private void initAdapter() {
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == carsResult.size() - 1) {
                         //bottom of list!
                         loadMore();
+                        page ++;
                         isLoading = true;
                     }
                 }
